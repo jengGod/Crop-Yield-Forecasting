@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าพยากรณ์</title>
-</head>
-<body>
-    <h1>หน้าพยากรณ์</h1>
-    <p>kuyyyyyyyyyyyyyyyyyyyy</p>
-    <hr>
-    <a href="/">หน้าเเรก</a>
-    <a href="/model">หน้าพยากรณ์</a>
-</body>
-</html>
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    </head>
+    <body>
+        <div id="map" style="height: 690px;margin-top: 80px;"></div>
+        <script>
+            var map = L.map('map').setView([16.0, 103.0], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+            }).addTo(map);
+        
+            L.marker([16.42, 102.83]).addTo(map)
+                .bindPopup("ขอนแก่น")
+                .openPopup();
+        </script>        
+    </body>
