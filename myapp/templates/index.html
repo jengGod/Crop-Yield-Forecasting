@@ -60,6 +60,9 @@
             }
         }
     </script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
     <div class="header"><a href="/">หน้าหลัก</a> <a href="/model">หน้าพยากรณ์</a></div>
@@ -76,8 +79,19 @@
         </select>
     </div>
     <div class="map-container">
+        <div class="legend-button" onclick="toggleLegend()"style="";>แสดงสัญลักษณ์สี</div>
+        <div id="map" style="height: 650px;"></div>
+        <script>
+            var map = L.map('map').setView([16.0, 103.0], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+            }).addTo(map);
+        
+            L.marker([16.42, 102.83]).addTo(map)
+                .bindPopup("ขอนแก่น")
+                .openPopup();
+        </script> 
         <div class="legend-container">
-            <div class="legend-button" onclick="toggleLegend()"style="";>แสดงสัญลักษณ์สี</div>
             <div class="legend" id="legend">
                 <p><span class="marker green"></span> ผลผลิตมาก</p>
                 <p><span class="marker yellow"></span> ผลผลิตปานกลาง</p>
