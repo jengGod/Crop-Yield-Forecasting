@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>รายชื่อจังหวัด</title>
+</head>
+<body>
+    <h1>รายชื่อจังหวัดในภาคตะวันออกเฉียงเหนือ</h1>
+    <ul>
+        {% for province in provinces %}
+            <li>{{ province.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
