@@ -1,106 +1,216 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>หน้าหลักแผนที่เเสดงข้อมูล</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .header {
-            background-color: #ccff99;
-            padding: 10px;
-            text-align: end;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .controls {
-            display: flex;
-            justify-content: space-around;
-            background-color: #99ff66;
-            padding: 10px;
-        }
-        select, button {
-            padding: 5px;
-            font-size: 16px;
-        }
-        .map-container {
-            position: relative;
-            width: 100%;
-            height: 500px;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Thailand_location_map.svg/800px-Thailand_location_map.svg.png') no-repeat center;
-            background-size: cover;
-        }
-        .legend {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .marker {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-        }
-        .green { background-color: green; }
-        .yellow { background-color: yellow; }
-        .red { background-color: red; }
-    </style>
-    <script>
-        function toggleLegend() {
-            var legend = document.getElementById("legend");
-            if (legend.style.display === "none") {
-                legend.style.display = "block";
-            } else {
-                legend.style.display = "none";
-            }
-        }
-    </script>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .header {
+        background-color: #ccff99;
+        padding: 10px;
+        text-align: end;
+        font-size: 20px;
+        font-weight: bold;
+        display: flex;
+        justify-content: flex-end;
+        gap: 40px;
+      }
 
+      a {
+        text-decoration: none;
+        color: black;
+      }
+
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #99ff66;
+        padding: 10px 15px; /* ปรับการเว้นระยะด้านข้าง */
+      }
+
+      .controls select,
+      .controls input {
+        font-size: 16px;
+        padding: 6px 10px; /* ปรับขนาด padding ของ input และ select */
+        border: 1px solid #ccc;
+        border-radius: 5px; /* เพิ่มขอบโค้งให้แต่ละอีลีเมนต์ */
+      }
+
+      .controls select {
+        width: 140px; /* ลดความกว้างของ select เพื่อไม่ให้ขนาดใหญ่เกินไป */
+      }
+
+      .controls input[type="date"] {
+        width: 160px; /* ลดความกว้างของ input วันที่ */
+      }
+
+      .controls span {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333; /* สีตัวอักษร */
+        margin: 0 8px; /* ลดระยะห่างระหว่าง span กับ input หรือ select */
+      }
+
+      select,
+      button {
+        padding: 5px;
+        font-size: 16px;
+      }
+      .map-container {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Thailand_location_map.svg/800px-Thailand_location_map.svg.png")
+          no-repeat center;
+        background-size: cover;
+      }
+      .legend-button {
+        position: fixed; /* เปลี่ยนเป็น fixed เพื่อให้อยู่บนสุดตลอดเวลา */
+        top: 115px;
+        left: 10px;
+        background: #99ff66;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000; /* เพิ่ม z-index สูงเพื่อให้แสดงด้านหน้า */
+      }
+
+      .legend {
+        position: fixed; /* เปลี่ยนเป็น fixed เพื่อให้แสดงอยู่บนสุดเสมอ */
+        top: 115px;
+        right: 20px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 1000; /* เพิ่ม z-index สูงเช่นกัน */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* เพิ่มเงาเพื่อให้ดูโดดเด่นขึ้น */
+      }
+
+      .legend p {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* ระยะห่างระหว่างจุดสีและข้อความ */
+      }
+      .legend .marker {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+      }
+      .legend-text {
+        margin-left: 5px;
+      }
+      .green {
+        background-color: green;
+      }
+      .yellow {
+        background-color: yellow;
+      }
+      .red {
+        background-color: red;
+      }
+    </style>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-</head>
-<body>
-    <div class="header"><a href="/">หน้าหลัก</a> <a href="/model">หน้าพยากรณ์</a></div>
+  </head>
+  <body>
+    <div class="header">
+      <a href="/">หน้าหลัก</a>
+      <a href="/model">หน้าพยากรณ์</a>
+    </div>
     <div class="controls">
-        <select>
-            <option>จังหวัด</option>
-        </select>
-        <input type="date" value="2017-01-01">
-        <span>ถึง</span>
-        <input type="date" value="2022-01-01">
-        <span>แสดงข้อมูลเป็น</span>
-        <select>
-            <option>รายปี</option>
-        </select>
+      <select>
+        <option>จังหวัด</option>
+      </select>
+      <input type="date" value="2017-01-01" />
+      <span>ถึง</span>
+      <input type="date" value="2022-01-01" />
+      <span>แสดงข้อมูลเป็น</span>
+      <select>
+        <option>รายปี</option>
+      </select>
     </div>
+
     <div class="map-container">
-        <div class="legend-button" onclick="toggleLegend()"style="";>แสดงสัญลักษณ์สี</div>
-        <div id="map" style="height: 650px;"></div>
-        <script>
-            var map = L.map('map').setView([16.0, 103.0], 6);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-            }).addTo(map);
-        
-            L.marker([16.42, 102.83]).addTo(map)
-                .bindPopup("ขอนแก่น")
-                .openPopup();
-        </script> 
-        <div class="legend-container">
-            <div class="legend" id="legend">
-                <p><span class="marker green"></span> ผลผลิตมาก</p>
-                <p><span class="marker yellow"></span> ผลผลิตปานกลาง</p>
-                <p><span class="marker red"></span> ผลผลิตน้อย</p>
-            </div>
+      <div class="legend-button" onclick="toggleLegend()">แสดงสัญลักษณ์สี</div>
+      <div id="map" style="height: 680px; margin-top: 0px"></div>
+      <div class="legend-container">
+        <div class="legend" id="legend" style="display: none">
+          <p>
+            <span class="marker green"></span
+            ><span class="legend-text">ผลผลิตมาก</span>
+          </p>
+          <p>
+            <span class="marker yellow"></span
+            ><span class="legend-text">ผลผลิตปานกลาง</span>
+          </p>
+          <p>
+            <span class="marker red"></span
+            ><span class="legend-text">ผลผลิตน้อย</span>
+          </p>
         </div>
-        <!-- <div class="marker green" style="top: 30%; left: 50%;"></div>
-        <div class="marker yellow" style="top: 50%; left: 40%;"></div>
-        <div class="marker red" style="top: 60%; left: 70%;"></div> -->
+      </div>
     </div>
-</body>
+
+    <script>
+      function toggleLegend() {
+        var legend = document.getElementById("legend");
+        legend.style.display =
+          legend.style.display === "none" || legend.style.display === ""
+            ? "block"
+            : "none";
+      }
+
+      var map = L.map("map", {
+        center: [16.0, 103.0],
+        zoom: 7,
+        zoomControl: false,
+      });
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+      }).addTo(map);
+
+      L.control
+        .zoom({
+          position: "bottomleft",
+        })
+        .addTo(map);
+
+      // ข้อมูลตำแหน่งจังหวัดในภาคอีสาน
+      var provinces = [
+        { name: "ขอนแก่น", lat: 16.42, lng: 102.83 },
+        { name: "นครราชสีมา", lat: 14.97, lng: 102.1 },
+        { name: "อุบลราชธานี", lat: 15.24, lng: 104.85 },
+        { name: "อุดรธานี", lat: 17.41, lng: 102.79 },
+        { name: "มหาสารคาม", lat: 16.18, lng: 103.29 },
+        { name: "ร้อยเอ็ด", lat: 16.05, lng: 103.65 },
+        { name: "บุรีรัมย์", lat: 15.0, lng: 103.1 },
+        { name: "สุรินทร์", lat: 14.88, lng: 103.49 },
+        { name: "ศรีสะเกษ", lat: 15.12, lng: 104.33 },
+        { name: "หนองคาย", lat: 17.88, lng: 102.74 },
+        { name: "หนองบัวลำภู", lat: 17.22, lng: 102.43 },
+        { name: "เลย", lat: 17.49, lng: 101.72 },
+        { name: "สกลนคร", lat: 17.15, lng: 104.14 },
+        { name: "นครพนม", lat: 17.39, lng: 104.78 },
+        { name: "ชัยภูมิ", lat: 15.8, lng: 102.03 },
+        { name: "กาฬสินธุ์", lat: 16.43, lng: 103.51 },
+        { name: "มุกดาหาร", lat: 16.54, lng: 104.72 },
+        { name: "ยโสธร", lat: 15.79, lng: 104.15 },
+        { name: "บึงกาฬ", lat: 18.36, lng: 103.64 },
+        { name: "อำนาจเจริญ", lat: 15.85, lng: 104.63 },
+      ];
+
+      // เพิ่ม Marker สำหรับทุกจังหวัด
+      provinces.forEach(function (province) {
+        L.marker([province.lat, province.lng])
+          .addTo(map)
+          .bindPopup(province.name);
+      });
+    </script>
+  </body>
 </html>
