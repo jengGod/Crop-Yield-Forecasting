@@ -9,6 +9,6 @@ def index(request):
 def model(request):
     return render(request,"model.html")  
 
-def province_list(request):
-    provinces = Province.objects.all().order_by('name')  # ดึงข้อมูลจังหวัดทั้งหมดและเรียงตามชื่อ
-    return render(request, "province.html", {"provinces": provinces})    
+# def province_list(request):
+#     provinces = Province.objects.all().order_by('name')  # ดึงข้อมูลจังหวัดทั้งหมดและเรียงตามชื่อ
+#     return render(request, "province.html", {"provinces": provinces})    
