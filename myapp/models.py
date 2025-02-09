@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models  # ใช้ GeoDjango models
 
 class Province(models.Model):
     name = models.CharField(max_length=100, unique=True)  # ชื่อจังหวัด
@@ -12,9 +12,13 @@ class Province(models.Model):
     level = models.IntegerField(null=True, blank=True)  # ระดับการปกครอง เช่น 1 = จังหวัด
     admin = models.CharField(max_length=32, default="Thailand")  # ประเทศที่บริหารพื้นที่นี้
     subunit = models.CharField(max_length=100, null=True, blank=True)  # หน่วยย่อย เช่น ชื่อจังหวัด
-    
+
+    # เพิ่มฟิลด์ Geometry สำหรับพื้นที่ของจังหวัด
+    geom = models.MultiPolygonField()  
+
     class Meta:
         ordering = ['name']  # เรียงตามชื่อจังหวัด
 
     def __str__(self):
         return self.name
+
